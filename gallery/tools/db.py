@@ -34,6 +34,17 @@ def list_users_query():
     for row in res:
         print("{:<10} {:<10} {:<20}".format(row[0], row[1], row[2]))
 
+def add_user_query(username, password, full_name):
+    connect()
+    res = execute("select * from users where username = %s", (username,))
+    user_exists = res.fetchone()
+    if user_exists:
+        print(f"\nError: user with username {username} already exists")
+    else:
+        execute("insert into users (username, password, full_name) values (%s, %s, %s)",
+                (username, password, full_name))
+        connection.commit()
+
 
 if __name__ == "__main__":
     list_users_query()

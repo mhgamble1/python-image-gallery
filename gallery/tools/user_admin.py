@@ -1,4 +1,4 @@
-from db import list_users_query
+from db import list_users_query, add_user_query
 
 def menu():
     print()
@@ -12,9 +12,12 @@ def list_users():
     print("\nlisting users")
     list_users_query()
 
-def add_user():
-    print("\nadding user")
-    print(add_user_prompt())
+def add_user_prompt():
+    print()
+    username = input("Username> ")
+    password = input("Password> ")
+    full_name = input("Full name> ")
+    return username, password, full_name
 
 def edit_user():
     print("\nediting user")
@@ -29,11 +32,6 @@ def quit():
 def validation_warning():
     print("\nplease enter a number 1-5")
 
-def add_user_prompt():
-    username = input("Username> ")
-    password = input("Password> ")
-    full_name = input("Full name> ")
-    return username, password, full_name
 
 def main():
     while True:
@@ -42,7 +40,8 @@ def main():
         if selection == 1:
             list_users() 
         elif selection == 2:
-            add_user() 
+            username, password, full_name = add_user_prompt()
+            add_user_query(username, password, full_name)
         elif selection == 3:
             edit_user()    
         elif selection == 4:
