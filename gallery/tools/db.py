@@ -34,16 +34,23 @@ def list_users_query():
     for row in res:
         print("{:<10} {:<10} {:<20}".format(row[0], row[1], row[2]))
 
-def add_user_query(username, password, full_name):
+def user_exists_query(username):
     connect()
     res = execute("select * from users where username = %s", (username,))
     user_exists = res.fetchone()
-    if user_exists:
-        print(f"\nError: user with username {username} already exists")
-    else:
-        execute("insert into users (username, password, full_name) values (%s, %s, %s)",
-                (username, password, full_name))
-        connection.commit()
+    return user_exists is not None
+
+def add_user_query(username, password, full_name):
+    execute("insert into users (username, password, full_name) values (%s, %s, %s)",
+            (username, password, full_name))
+    connection.commit()
+
+def edit_user_query(username, password, full_name):
+    if password:
+        execute("update users set password = %s where username = %s", (password, username))
+    if full_name:
+        execute("update users set full_name = %s where username = %s", (full_name, username))
+    connection.commit()
 
 
 if __name__ == "__main__":

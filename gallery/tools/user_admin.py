@@ -1,4 +1,4 @@
-from db import list_users_query, add_user_query
+from db import list_users_query, user_exists_query, add_user_query, edit_user_query
 
 def menu():
     print()
@@ -15,12 +15,26 @@ def list_users():
 def add_user_prompt():
     print()
     username = input("Username> ")
+
+    if user_exists_query(username):
+        print(f"\nError: user with username {username} already exists")
+        return None, None, None
+
     password = input("Password> ")
     full_name = input("Full name> ")
     return username, password, full_name
 
-def edit_user():
-    print("\nediting user")
+def edit_user_prompt():
+    print()
+    username = input("Username to edit> ")
+
+    if not user_exists_query(username):
+        print("\nNo such user.")
+        return None, None, None
+
+    password = input("New password (press enter to keep current)>")
+    full_name = input("New full name (press enter to keep current)>")
+    return username, password, full_name
 
 def delete_user():
     print("\ndeleting user")
@@ -30,20 +44,30 @@ def quit():
     exit(0)
 
 def validation_warning():
-    print("\nplease enter a number 1-5")
+    print("\nPlease enter a number 1-5")
 
 
 def main():
     while True:
         menu()
-        selection = int(input("Enter command> "))
+        try:
+            selection = int(input("Enter command> "))
+        except ValueError:
+            validation_warning()
+            continue
+
         if selection == 1:
             list_users() 
         elif selection == 2:
             username, password, full_name = add_user_prompt()
+            if username is None:
+                continue
             add_user_query(username, password, full_name)
         elif selection == 3:
-            edit_user()    
+            username, password, full_name = edit_user_prompt()    
+            if username is None:
+                continue
+            edit_user_query(username, password, full_name)
         elif selection == 4:
             delete_user() 
         elif selection == 5:
