@@ -52,6 +52,10 @@ def edit_user_query(username, password, full_name):
         execute("update users set full_name = %s where username = %s", (full_name, username))
     connection.commit()
 
+def delete_user_query(username):
+    execute("delete from users where username = %s", (username,))
+    connection.commit()
+    print("\nDeleted.")
 
 if __name__ == "__main__":
     list_users_query()

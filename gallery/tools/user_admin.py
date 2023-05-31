@@ -1,4 +1,4 @@
-from db import list_users_query, user_exists_query, add_user_query, edit_user_query
+from db import list_users_query, user_exists_query, add_user_query, edit_user_query, delete_user_query
 
 def menu():
     print()
@@ -36,11 +36,22 @@ def edit_user_prompt():
     full_name = input("New full name (press enter to keep current)>")
     return username, password, full_name
 
-def delete_user():
-    print("\ndeleting user")
+def delete_user_prompt():
+    print()
+    username = input("Enter username to delete> ")
+
+    if not user_exists_query(username):
+        print("\nNo such user.")
+        return None
+
+    confirmation = input(f"Are you sure that you want to delete {username}? ")
+    if confirmation in ["Yes", "YES", "yes", "Y", "y"]:
+        return username
+    else:
+        return None
 
 def quit():
-    print("\nquitting")
+    print("\nBye.")
     exit(0)
 
 def validation_warning():
@@ -69,7 +80,10 @@ def main():
                 continue
             edit_user_query(username, password, full_name)
         elif selection == 4:
-            delete_user() 
+            username = delete_user_prompt()
+            if username is None:
+                continue
+            delete_user_query(username) 
         elif selection == 5:
             quit() 
         else:
