@@ -9,8 +9,10 @@ def menu():
     print("5) Quit")
 
 def list_users():
-    print("\nlisting users")
-    list_users_query()
+    result = {}
+    for user in list_users_query():
+        result[user[0]] = user[1]
+    return result
 
 def add_user_prompt():
     print()
