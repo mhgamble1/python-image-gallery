@@ -37,10 +37,7 @@ def execute(query, args=None):
 def list_users_query():
     connect()
     res = execute("select * from users")
-    print("{:<10} {:<10} {:<20}".format("username", "password", "full name"))
-    print("-------------------------------")
-    for row in res:
-        print("{:<10} {:<10} {:<20}".format(row[0], row[1], row[2]))
+    return res.fetchall()
 
 def user_exists_query(username):
     connect()
