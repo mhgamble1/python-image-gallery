@@ -1,10 +1,9 @@
-from flask import Flask
-from flask import request
-from flask import render_template
+from flask import Flask, request, render_template, redirect, url_for
+from user_admin import list_users
 
 app = Flask(__name__)
 
-@app.route("/admin", methods=['POST'])
+@app.route("/admin", methods=['GET', 'POST'])
 def admin():
     return render_template('admin.html', users=list_users()) 
 
