@@ -1,12 +1,18 @@
 import psycopg2
 import json
-from .secrets import get_secret_image_gallery
+from secrets import get_secret_image_gallery
 
 connection = None
 
 def get_secret():
-    jsonString = get_secret_image_gallery()
-    return json.loads(jsonString)
+    try:
+        print("Getting secret...")
+        jsonString = get_secret_image_gallery()
+        print(f"Secret obtained: {jsonString}")
+        return json.loads(jsonString)
+    except Exception as e:
+        print(f"Failed to get or parse secret: {e}")
+        return None
 
 def get_password(secret):
     return secret['password']
@@ -22,8 +28,14 @@ def get_username(secret):
 
 def connect():
     global connection
-    secret = get_secret()
-    connection = psycopg2.connect(host=get_host(secret), dbname=get_dbname(secret), user=get_username(secret), password=get_password(secret)) 
+    try:
+        secret = get_secret()
+        print(f"Secret: {secret}")  # This will print your secret, be careful not to expose sensitive info
+        connection = psycopg2.connect(host=get_host(secret), dbname=get_dbname(secret), 
+                                      user=get_username(secret), password=get_password(secret))
+        print("Database connection successful.")
+    except Exception as e:
+        print(f"Failed to connect to the database: {e}") 
 
 def execute(query, args=None):
     global connection
@@ -36,8 +48,13 @@ def execute(query, args=None):
 
 def list_users_query():
     connect()
-    res = execute("select * from users")
-    return res.fetchall()
+    try:
+        res = execute("select * from users")
+        users = res.fetchall()
+        print(f"Users: {users}")  # This will print the list of users
+        return users
+    except Exception as e:
+        print(f"Failed to fetch users: {e}")
 
 def user_exists_query(username):
     connect()
@@ -63,4 +80,6 @@ def delete_user_query(username):
     print("\nDeleted.")
 
 if __name__ == "__main__":
-    list_users_query()
+    print("starting")
+    for user in list_users_query():
+        print(user)

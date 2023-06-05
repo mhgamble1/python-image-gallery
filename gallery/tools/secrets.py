@@ -26,6 +26,7 @@ def get_secret_image_gallery():
     except ClientError as e:
         # For a list of exceptions thrown, see
         # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        print(f"An error occurred: {e}")
         raise e
 
     # Decrypts secret using the associated KMS key.

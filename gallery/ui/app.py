@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for
-from user_admin import list_users
+from ..tools.user_admin import list_users
 
 app = Flask(__name__)
 

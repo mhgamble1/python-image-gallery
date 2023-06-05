@@ -1,4 +1,4 @@
-from db import list_users_query, user_exists_query, add_user_query, edit_user_query, delete_user_query
+from .db import list_users_query, user_exists_query, add_user_query, edit_user_query, delete_user_query
 
 def menu():
     print()
