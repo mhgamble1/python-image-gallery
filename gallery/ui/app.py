@@ -4,6 +4,8 @@ from flask import render_template
 
 app = Flask(__name__)
 
-@app.route("/admin")
+@app.route("/admin", methods=['POST'])
 def admin():
-    pass
+    return render_template('admin.html', users=list_users()) 
+
+
