@@ -8,4 +8,7 @@ app = Flask(__name__)
 def admin():
     return render_template('admin.html', users=list_users()) 
 
-
+@app.route("/admin/delete/<username>", methods=['POST'])
+def delete(username):
+    delete_user_query(username)
+    return redirect(url_for('admin'))
