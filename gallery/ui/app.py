@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for
-from ..tools.db import list_users_query, delete_user_query, add_user_query
+from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query
 
 app = Flask(__name__)
 
@@ -23,3 +23,12 @@ def add_user():
 
     return render_template('add_user.html')
 
+@app.route("/admin/edit/<username>", methods=['GET', 'POST'])
+def edit(username):
+    if request.method == 'POST':
+        password = request.form.get('password')
+        full_name = request.form.get('full_name')
+        edit_user_query(username, password, full_name)
+        return redirect(url_for('admin'))
+
+    return render_template('edit_user.html', username=username)
