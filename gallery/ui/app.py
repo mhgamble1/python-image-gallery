@@ -1,11 +1,11 @@
 from flask import Flask, request, render_template, redirect, url_for
-from ..tools.user_admin import list_users, delete_user_query
+from ..tools.db import list_users_query, delete_user_query, add_user_query
 
 app = Flask(__name__)
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
-    return render_template('admin.html', users=list_users()) 
+    return render_template('admin.html', users=list_users_query()) 
 
 @app.route("/admin/delete/<username>", methods=['POST'])
 def delete(username):
