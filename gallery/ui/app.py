@@ -47,3 +47,6 @@ def login():
 def upload():
     return render_template('upload.html')
 
+@app.route("/images", methods=['GET', 'POST'])
+def images():
+    return render_template('images.html')
