@@ -1,4 +1,6 @@
-#!/usr/bin/bash
+#!/bin/bash
 
-export FLASK_APP=gallery/ui/app.py
-flask run --host=0.0.0.0 --debug
+sudo mkdir -p /var/log/uwsgi
+sudo chown -R ec2-user:ec2-user /var/log/uwsgi
+
+uwsgi -s localhost:5555 --manage-script-name --mount /=gallery.ui.app:app --logto /var/log/uwsgi/ansible-ig.log --debug
