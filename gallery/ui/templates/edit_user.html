@@ -5,10 +5,15 @@
   </head>
   <body>
     <h1>Edit User | <a href="/admin">Home</a><h1>
-    <form action="/admin/edit/{{username}}" method="post">
-      password <input name="password">
-      full name <input name="full_name">
-      <input type="submit" value="Edit User">
-    </form>
+      <form action="/admin/edit/{{username}}" method="post">
+        password <input name="password">
+	full name <input name="full_name">
+  	admin:
+  	<input type="radio" id="admin_yes" name="admin" value="yes">
+  	<label for="admin_yes">Yes</label>
+  	<input type="radio" id="admin_no" name="admin" value="no">
+  	<label for="admin_no">No</label>
+  	<input type="submit" value="Edit User">
+      </form>
   </body>
 </html>
