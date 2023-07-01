@@ -1,6 +1,0 @@
-#!/bin/bash
-
-sudo mkdir -p /var/log/uwsgi
-sudo chown -R ec2-user:ec2-user /var/log/uwsgi
-
-uwsgi -s localhost:5555 --manage-script-name --mount /=gallery.ui.app:app --logto /var/log/uwsgi/ansible-ig.log --debug

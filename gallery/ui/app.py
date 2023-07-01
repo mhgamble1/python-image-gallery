@@ -1,4 +1,5 @@
 import json
+from functools import wraps
 from flask import Flask, request, render_template, redirect, url_for, session
 from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query
 
@@ -17,19 +18,33 @@ connect()
 def get_user_dao():
     return PostgresUserDAO()
 
+def check_admin():
+    return 'username' in session and session['username'] == 'test'
+
 # admin
+def requires_admin(view):
+    @wraps(view)
+    def decorated(**kwargs):
+        if not check_admin():
+            return redirect('/login')
+        return view(**kwargs)
+    return decorated
+
 @app.route("/admin", methods=['GET', 'POST'])
+@requires_admin
 def admin():
     if not check_admin():
         return redirect('/login')
     return render_template('admin.html', users=list_users_query()) 
 
 @app.route("/admin/delete/<username>", methods=['POST'])
+@requires_admin
 def delete(username):
     delete_user_query(username)
     return redirect(url_for('admin'))
 
 @app.route("/admin/addUser", methods=['GET', 'POST'])
+@requires_admin
 def add_user():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -41,6 +56,7 @@ def add_user():
     return render_template('add_user.html')
 
 @app.route("/admin/edit/<username>", methods=['GET', 'POST'])
+@requires_admin
 def edit(username):
     if request.method == 'POST':
         password = request.form.get('password')
@@ -58,9 +74,6 @@ def index():
 @app.route("/invalidLogin")
 def invalidLogin():
     return "Invalid"
-
-def check_admin():
-    return 'username' in session and session['username'] == 'test'
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
