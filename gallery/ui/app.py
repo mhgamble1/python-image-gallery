@@ -3,6 +3,7 @@ from ..tools.db import list_users_query, delete_user_query, add_user_query, edit
 
 app = Flask(__name__)
 
+# admin
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     return render_template('admin.html', users=list_users_query()) 
@@ -32,3 +33,8 @@ def edit(username):
         return redirect(url_for('admin'))
 
     return render_template('edit_user.html', username=username)
+
+# main routes
+@app.route("/", methods=['GET', 'POST'])
+def index():
+    return render_template('index.html')
