@@ -19,9 +19,11 @@ def get_user_dao():
     return PostgresUserDAO()
 
 def check_admin():
-    return 'username' in session and session['username'] == 'test'
+    return check_user() and session['username'] == 'test'
 
-# admin
+def check_user():
+    return 'username' in session
+
 def requires_admin(view):
     @wraps(view)
     def decorated(**kwargs):
@@ -30,6 +32,15 @@ def requires_admin(view):
         return view(**kwargs)
     return decorated
 
+def requires_user(view):
+    @wraps(view)
+    def decorated(**kwargs):
+        if not check_user():
+            return redirect('/login')
+        return view(**kwargs)
+    return decorated
+
+# admin
 @app.route("/admin", methods=['GET', 'POST'])
 @requires_admin
 def admin():
@@ -68,6 +79,7 @@ def edit(username):
 
 # main routes
 @app.route("/", methods=['GET', 'POST'])
+@requires_user
 def index():
     return render_template('index.html')
 
@@ -88,15 +100,18 @@ def login():
         return render_template('login.html')
 
 @app.route("/upload", methods=['GET', 'POST'])
+@requires_user
 def upload():
     return render_template('upload.html')
 
 @app.route("/images", methods=['GET', 'POST'])
+@requires_user
 def images():
     return render_template('images.html')
 
 # sessions
 @app.route("/debugSession")
+@requires_user
 def debugSession():
     result = ""
     for key,value in session.items():
