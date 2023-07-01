@@ -42,3 +42,8 @@ def index():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     return render_template('login.html')
+
+@app.route("/upload", methods=['GET', 'POST'])
+def upload():
+    return render_template('upload.html')
+
