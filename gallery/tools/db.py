@@ -45,22 +45,29 @@ def user_exists_query(username):
     user_exists = res.fetchone()
     return user_exists is not None
 
-def add_user_query(username, password, full_name):
-    execute("insert into users (username, password, full_name) values (%s, %s, %s)",
-            (username, password, full_name))
+def add_user_query(username, password, full_name, admin):
+    execute("insert into users (username, password, full_name, admin) values (%s, %s, %s, %s)",
+            (username, password, full_name, admin))
     connection.commit()
 
-def edit_user_query(username, password, full_name):
+def edit_user_query(username, password, full_name, admin):
     if password:
         execute("update users set password = %s where username = %s", (password, username))
     if full_name:
         execute("update users set full_name = %s where username = %s", (full_name, username))
+    if admin is not None:
+        execute("update users set admin = %s where username = %s", (admin, username))
     connection.commit()
 
 def delete_user_query(username):
     execute("delete from users where username = %s", (username,))
     connection.commit()
     print("\nDeleted.")
+
+def is_admin_query(username):
+    res = execute("select admin from users where username = %s", (username,))
+    user = res.fetchone()
+    return user is not None and user[0]
 
 if __name__ == "__main__":
     list_users_query()

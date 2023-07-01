@@ -1,7 +1,7 @@
 import json
 from functools import wraps
 from flask import Flask, request, render_template, redirect, url_for, session
-from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query
+from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query, is_admin_query
 
 from ..tools.user import User
 from ..tools.postgres_user_dao import PostgresUserDAO
@@ -19,7 +19,7 @@ def get_user_dao():
     return PostgresUserDAO()
 
 def check_admin():
-    return check_user() and session['username'] == 'test'
+    return check_user() and is_admin_query(session['username'])
 
 def check_user():
     return 'username' in session
@@ -61,7 +61,8 @@ def add_user():
         username = request.form.get('username')
         password = request.form.get('password')
         full_name = request.form.get('full_name')
-        add_user_query(username, password, full_name)
+        admin = request.form.get('admin') == 'yes'
+        add_user_query(username, password, full_name, admin)
         return redirect(url_for('admin'))
 
     return render_template('add_user.html')
@@ -72,7 +73,8 @@ def edit(username):
     if request.method == 'POST':
         password = request.form.get('password')
         full_name = request.form.get('full_name')
-        edit_user_query(username, password, full_name)
+        admin = request.form.get('admin') == 'yes'
+        edit_user_query(username, password, full_name, admin)
         return redirect(url_for('admin'))
 
     return render_template('edit_user.html', username=username)
