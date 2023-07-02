@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 
 connection = None
 
-S3_BUCKET = os.getenv("S3_BUCKET")
+S3_BUCKET = os.getenv("S3_IMAGE_BUCKET")
 
 def connect():
     global connection
