@@ -1,9 +1,7 @@
 FROM ubuntu:latest
 
-# Set the environment variable
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Set the timezone
 RUN echo "America/Chicago" > /etc/timezone && \
     apt-get update -y && apt-get install -y tzdata apt-utils && \
     ln -fs /usr/share/zoneinfo/America/Chicago /etc/localtime && \
@@ -12,7 +10,7 @@ RUN echo "America/Chicago" > /etc/timezone && \
 
 COPY . .
 
-ENV PG_HOST=docker-ig-postgres.c9vwiewrcstl.us-east-1.rds.amazonaws.com \
+ENV PG_HOST=host.docker.internal \
     PG_PORT=5432 \
     IG_DATABASE=image_gallery \
     IG_USER=image_gallery \
