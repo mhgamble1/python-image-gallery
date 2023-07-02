@@ -4,7 +4,7 @@ HOST="docker-ig-postgres.c9vwiewrcstl.us-east-1.rds.amazonaws.com"
 DBNAME="image_gallery"
 USER="image_gallery"
 PASSWORD_FILE="ig_password"
-DUMP_FILE="configure_database.sql"
+DUMP_FILE="config_db.sql"
 read -r PASSWORD < $PASSWORD_FILE
 export PGPASSWORD=$PASSWORD
 psql -h $HOST -U $USER -d $DBNAME -f $DUMP_FILE
