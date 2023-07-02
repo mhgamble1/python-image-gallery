@@ -233,3 +233,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 GRANT SELECT, INSERT, UPDATE, DELETE ON users TO image_gallery;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO image_gallery;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO image_gallery;
+
+INSERT INTO users (username, password, full_name, admin)
+VALUES ('augrader', 'cpsc4973', 'gradey mcgrader', true);
