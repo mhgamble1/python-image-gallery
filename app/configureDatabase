@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOST="docker-ig-postgres.c9vwiewrcstl.us-east-1.rds.amazonaws.com"
+HOST="host.docker.internal"
 DBNAME="image_gallery"
 USER="image_gallery"
 PASSWORD_FILE="ig_password"

@@ -1,6 +1,7 @@
 CREATE DATABASE image_gallery WITH OWNER = image_gallery;
-
 GRANT ALL PRIVILEGES ON DATABASE image_gallery TO image_gallery;
+
+\connect image_gallery;
 
 CREATE TABLE public.users (
     user_id SERIAL PRIMARY KEY,
