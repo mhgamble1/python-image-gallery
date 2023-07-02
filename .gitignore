@@ -161,3 +161,4 @@ cython_debug/
 
 ig_password
 flask_session_secret
+postgres_password
