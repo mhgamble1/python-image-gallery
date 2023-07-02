@@ -1,3 +1,4 @@
+import os
 import json
 import traceback
 from functools import wraps
@@ -7,12 +8,12 @@ from ..tools.db import list_users_query, delete_user_query, add_user_query, edit
 from ..tools.user import User
 from ..tools.postgres_user_dao import PostgresUserDAO
 from ..tools.db import connect
-from ..tools.secrets import get_secret_flask_session
 
 app = Flask(__name__)
-secret = get_secret_flask_session()
-secret_dict = json.loads(secret)
-app.secret_key = secret_dict["secret_key"]
+session_secret_file_path = os.getenv("FLASK_SESSION_SECRET_FILE")
+with open(session_secret_file_path, 'r') as session_secret_file:
+    secret_key = session_secret_file.read().strip()
+app.secret_key = secret_key
 
 connect()
 
