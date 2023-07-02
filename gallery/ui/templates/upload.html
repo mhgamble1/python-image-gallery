@@ -8,5 +8,10 @@
   </head>
   <body>
     <h1>Upload</h1>
+	<form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="image">Choose image to upload</label>
+        <input type="file" id="image" name="image" accept="image/png, image/jpeg">
+        <input type="submit" value="Upload">
+    </form>
   </body>
 </html>
