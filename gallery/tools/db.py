@@ -1,31 +1,23 @@
 import psycopg2
-import json
 import boto3
+import os
 from werkzeug.utils import secure_filename
-from .secrets import get_secret_image_gallery
 
 connection = None
 
-def get_secret():
-    jsonString = get_secret_image_gallery()
-    return json.loads(jsonString)
-
-def get_password(secret):
-    return secret['password']
-
-def get_host(secret):
-    return secret['host']
-
-def get_dbname(secret):
-    return secret['database_name']
-
-def get_username(secret):
-    return secret['username']
+S3_BUCKET = os.getenv("S3_BUCKET")
 
 def connect():
     global connection
-    secret = get_secret()
-    connection = psycopg2.connect(host=get_host(secret), dbname=get_dbname(secret), user=get_username(secret), password=get_password(secret)) 
+    ig_password_file_path = os.getenv("IG_PASSWD_FILE")
+    with open(ig_password_file_path, 'r') as ig_password_file:
+        ig_password = ig_password_file.read().strip()
+    connection = psycopg2.connect(
+        host=os.getenv("PG_HOST"),
+        dbname=os.getenv("IG_DATABASE"),
+        user=os.getenv("IG_USER"),
+        password=ig_password
+    )
 
 def execute(query, args=None):
     global connection
@@ -92,7 +84,7 @@ def upload_file(request, user):
         return 'No selected file'
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
-        s3.upload_fileobj(image, 'edu.au.cc.image-gallery', f'{user.username}/{filename}')
+        s3.upload_fileobj(image, S3_BUCKET, f'{user.username}/{filename}')
         connect()
         execute("INSERT INTO images (filename, user_id) VALUES (%s, %s)", (filename, user.user_id))
         connection.commit()
@@ -100,10 +92,10 @@ def upload_file(request, user):
 
 def delete_image(user, filename):
     execute("delete from images where user_id=%s and filename=%s", (user.user_id, filename))
-    s3.delete_object(Bucket='edu.au.cc.image-gallery', Key=f'{user.username}/{filename}')
+    s3.delete_object(Bucket=S3_BUCKET, Key=f'{user.username}/{filename}')
 
-def generate_presigned_url(bucket_name, object_name, expiration=3600):
-    return s3.generate_presigned_url('get_object', Params={'Bucket': bucket_name, 'Key': object_name}, ExpiresIn=expiration)
+def generate_presigned_url(object_name, expiration=3600):
+    return s3.generate_presigned_url('get_object', Params={'Bucket': S3_BUCKET, 'Key': object_name}, ExpiresIn=expiration)
 
 if __name__ == "__main__":
     list_users_query()

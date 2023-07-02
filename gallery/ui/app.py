@@ -122,7 +122,7 @@ def upload():
 def images():
     user = get_user_dao().get_user_by_username(session['username'])
     user_images = get_user_dao().get_user_images(user)
-    signed_urls = [generate_presigned_url('edu.au.cc.image-gallery', image) for image in user_images]
+    signed_urls = [generate_presigned_url(image) for image in user_images]
     filenames = [image.split('/')[-1].split('?')[0] for image in user_images]
     delete_urls = [url_for('delete_image_route', filename=filename) for filename in filenames]
     return render_template('images.html', images=zip(signed_urls, delete_urls))
