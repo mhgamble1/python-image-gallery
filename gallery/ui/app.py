@@ -1,4 +1,5 @@
 import json
+import traceback
 from functools import wraps
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query, is_admin_query, upload_file, generate_presigned_url, delete_image
@@ -121,14 +122,15 @@ def images():
     user = get_user_dao().get_user_by_username(session['username'])
     user_images = get_user_dao().get_user_images(user)
     signed_urls = [generate_presigned_url('edu.au.cc.image-gallery', image) for image in user_images]
-    return render_template('images.html', images=signed_urls)
+    filenames = [image.split('/')[-1].split('?')[0] for image in user_images]
+    delete_urls = [url_for('delete_image_route', filename=filename) for filename in filenames]
+    return render_template('images.html', images=zip(signed_urls, delete_urls))
 
-@app.route("/deleteImage/<filename>", methods=['POST'])
+@app.route("/deleteImage/<filename>", methods=['GET', 'POST'])
 @requires_user
-def delete_image(filename):
+def delete_image_route(filename):
     user = get_user_dao().get_user_by_username(session['username'])
-    object_name = f'{user.user_id}/{filename}'
-    get_user_dao().delete_image(user, object_name)
+    delete_image(user, filename)
     flash('Image successfully deleted')    
     return redirect(url_for('images'))
 

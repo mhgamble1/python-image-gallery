@@ -30,11 +30,18 @@ def connect():
 def execute(query, args=None):
     global connection
     cursor = connection.cursor()
-    if not args:
-        cursor.execute(query)
-    else:
-        cursor.execute(query, args)
-    return cursor
+    try:
+        if not args:
+            cursor.execute(query)
+        else:
+            cursor.execute(query, args)
+        return cursor
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        connection.rollback()
+    finally:
+        connection.commit()
+
 
 def list_users_query():
     connect()
@@ -77,7 +84,7 @@ def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def upload_file(request, user_id):
+def upload_file(request, user):
     if 'image' not in request.files:
         return "No image file in request"
     image = request.files['image']
@@ -85,11 +92,18 @@ def upload_file(request, user_id):
         return 'No selected file'
     if image and allowed_file(image.filename):
         filename = secure_filename(image.filename)
-        s3.upload_fileobj(image, 'edu.au.cc.image-gallery', filename)
+        s3.upload_fileobj(image, 'edu.au.cc.image-gallery', f'{user.username}/{filename}')
         connect()
-        execute("INSERT INTO images (filename, user_id) VALUES (%s, %s)", (filename, user_id))
+        execute("INSERT INTO images (filename, user_id) VALUES (%s, %s)", (filename, user.user_id))
         connection.commit()
         return 'File successfully uploaded'
+
+def delete_image(user, filename):
+    execute("delete from images where user_id=%s and filename=%s", (user.user_id, filename))
+    s3.delete_object(Bucket='edu.au.cc.image-gallery', Key=f'{user.username}/{filename}')
+
+def generate_presigned_url(bucket_name, object_name, expiration=3600):
+    return s3.generate_presigned_url('get_object', Params={'Bucket': bucket_name, 'Key': object_name}, ExpiresIn=expiration)
 
 if __name__ == "__main__":
     list_users_query()

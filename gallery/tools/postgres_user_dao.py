@@ -2,6 +2,7 @@ from . import db
 from .user import User
 from .user_dao import UserDAO
 
+
 class PostgresUserDAO(UserDAO):
     def __init__(self):
         pass
@@ -23,3 +24,11 @@ class PostgresUserDAO(UserDAO):
             return None
         else:
             return User(row[0], row[1], row[2], row[3])
+
+    def get_user_images(self, user):
+        result = []
+        cursor = db.execute("select filename from images where user_id=%s", (user.user_id,))
+        for item in cursor.fetchall():
+            result.append(f'{user.username}/{item[0]}')
+        return result
+
