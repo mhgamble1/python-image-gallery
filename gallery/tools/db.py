@@ -1,5 +1,7 @@
 import psycopg2
 import json
+import boto3
+from werkzeug.utils import secure_filename
 from .secrets import get_secret_image_gallery
 
 connection = None
@@ -68,6 +70,26 @@ def is_admin_query(username):
     res = execute("select admin from users where username = %s", (username,))
     user = res.fetchone()
     return user is not None and user[0]
+
+s3 = boto3.client('s3')
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def upload_file(request, user_id):
+    if 'image' not in request.files:
+        return "No image file in request"
+    image = request.files['image']
+    if image.filename == '':
+        return 'No selected file'
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        s3.upload_fileobj(image, 'edu.au.cc.image-gallery', filename)
+        connect()
+        execute("INSERT INTO images (filename, user_id) VALUES (%s, %s)", (filename, user_id))
+        connection.commit()
+        return 'File successfully uploaded'
 
 if __name__ == "__main__":
     list_users_query()

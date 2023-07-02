@@ -1,7 +1,7 @@
 import json
 from functools import wraps
 from flask import Flask, request, render_template, redirect, url_for, session
-from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query, is_admin_query
+from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query, is_admin_query, upload_file
 
 from ..tools.user import User
 from ..tools.postgres_user_dao import PostgresUserDAO
@@ -104,6 +104,15 @@ def login():
 @app.route("/upload", methods=['GET', 'POST'])
 @requires_user
 def upload():
+    if request.method == 'POST':
+        user = get_user_dao().get_user_by_username(session["username"])
+        if user is None:
+            return "User not found"
+        result = upload_file(request, user.user_id)
+        if result == 'File successfully uploaded':
+            return redirect(url_for('images'))
+        else:
+            return result
     return render_template('upload.html')
 
 @app.route("/images", methods=['GET', 'POST'])
