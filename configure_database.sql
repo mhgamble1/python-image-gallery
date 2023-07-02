@@ -1,4 +1,3 @@
-GRANT image_gallery TO postgres;
 CREATE DATABASE image_gallery OWNER image_gallery;
 \c image_gallery;
 
