@@ -16,9 +16,9 @@ ENV PG_HOST=image-gallery.c9vwiewrcstl.us-east-1.rds.amazonaws.com \
     PG_PORT=5432 \
     IG_DATABASE=image_gallery \
     IG_USER=image_gallery \
-    IG_PASSWD_FILE=./ig_password \
+    IG_PASSWD_FILE=/ig_password \
     S3_IMAGE_BUCKET=edu.au.cc.image-gallery \
-    FLASK_SESSION_SECRET_FILE=./flask_session_secret
+    FLASK_SESSION_SECRET_FILE=/flask_session_secret
 
 RUN pip3 install -r requirements.txt
 
