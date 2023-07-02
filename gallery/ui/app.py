@@ -1,7 +1,7 @@
 import json
 from functools import wraps
-from flask import Flask, request, render_template, redirect, url_for, session
-from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query, is_admin_query, upload_file
+from flask import Flask, request, render_template, redirect, url_for, session, flash
+from ..tools.db import list_users_query, delete_user_query, add_user_query, edit_user_query, is_admin_query, upload_file, generate_presigned_url, delete_image
 
 from ..tools.user import User
 from ..tools.postgres_user_dao import PostgresUserDAO
@@ -108,7 +108,7 @@ def upload():
         user = get_user_dao().get_user_by_username(session["username"])
         if user is None:
             return "User not found"
-        result = upload_file(request, user.user_id)
+        result = upload_file(request, user)
         if result == 'File successfully uploaded':
             return redirect(url_for('images'))
         else:
@@ -118,7 +118,19 @@ def upload():
 @app.route("/images", methods=['GET', 'POST'])
 @requires_user
 def images():
-    return render_template('images.html')
+    user = get_user_dao().get_user_by_username(session['username'])
+    user_images = get_user_dao().get_user_images(user)
+    signed_urls = [generate_presigned_url('edu.au.cc.image-gallery', image) for image in user_images]
+    return render_template('images.html', images=signed_urls)
+
+@app.route("/deleteImage/<filename>", methods=['POST'])
+@requires_user
+def delete_image(filename):
+    user = get_user_dao().get_user_by_username(session['username'])
+    object_name = f'{user.user_id}/{filename}'
+    get_user_dao().delete_image(user, object_name)
+    flash('Image successfully deleted')    
+    return redirect(url_for('images'))
 
 # sessions
 @app.route("/debugSession")
@@ -129,3 +141,8 @@ def debugSession():
         result += key+"->"+str(value)+"<br />"
     return result
 
+@app.errorhandler(Exception)
+def handle_exception(e):
+    print(f"An error ocurred: {e}")
+    traceback.print_exc()
+    return "An unexpected error occurred", 500
