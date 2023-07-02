@@ -1,0 +1,1 @@
+flask --app gallery/ui/app.py run --debug
