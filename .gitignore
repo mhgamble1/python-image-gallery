@@ -162,3 +162,5 @@ cython_debug/
 ig_password
 flask_session_secret
 postgres_password
+aws_secret_access_key
+aws_access_key_id
