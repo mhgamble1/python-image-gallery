@@ -1,3 +1,7 @@
+GRANT image_gallery TO postgres;
+CREATE DATABASE image_gallery OWNER image_gallery;
+\c image_gallery;
+
 --
 -- PostgreSQL database dump
 --
@@ -224,3 +228,8 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 --
 -- PostgreSQL database dump complete
 --
+
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON users TO image_gallery;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO image_gallery;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO image_gallery;
