@@ -4,18 +4,19 @@
     <title>Admin</title>
   </head>
   <body>
-    <h1>Admin | <a href="/admin/addUser">Create User</a></h1> 
+    <h1>Admin | <a href="/admin/addUser">Create User</a></h1>
     <h2>Users</h2>
     <ul>
-    {% for user_id,username, password, full_name, admin in users %}
+      {% for user_id,username, password, full_name, admin in users %}
       <li>
-	      <a href="/admin/edit/{{username}}">Username: {{username}} | Name: {{full_name}} | Admin: {{admin}}</a>
-          <form action="/admin/delete/{{username}}" method="post">
-            <input type="submit" value="Delete">
-          </form>
+        <a href="/admin/edit/{{username}}"
+          >Username: {{username}} | Name: {{full_name}} | Admin: {{admin}}</a
+        >
+        <form action="/admin/delete/{{username}}" method="post">
+          <input type="submit" value="Delete" />
+        </form>
       </li>
-    {% endfor %}
+      {% endfor %}
     </ul>
   </body>
 </html>
-
