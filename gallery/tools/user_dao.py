@@ -4,4 +4,3 @@ class UserDAO:
 
     def delete_user(self, username):
         raise Exception("Must be implemented")
-

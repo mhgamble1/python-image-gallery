@@ -1,4 +1,11 @@
-from .db import list_users_query, user_exists_query, add_user_query, edit_user_query, delete_user_query
+from .db import (
+    list_users_query,
+    user_exists_query,
+    add_user_query,
+    edit_user_query,
+    delete_user_query,
+)
+
 
 def menu():
     print()
@@ -8,11 +15,13 @@ def menu():
     print("4) Delete user")
     print("5) Quit")
 
+
 def list_users():
     result = {}
     for user in list_users_query():
         result[user[0]] = user[1]
     return result
+
 
 def add_user_prompt():
     print()
@@ -26,6 +35,7 @@ def add_user_prompt():
     full_name = input("Full name> ")
     return username, password, full_name
 
+
 def edit_user_prompt():
     print()
     username = input("Username to edit> ")
@@ -37,6 +47,7 @@ def edit_user_prompt():
     password = input("New password (press enter to keep current)>")
     full_name = input("New full name (press enter to keep current)>")
     return username, password, full_name
+
 
 def delete_user_prompt():
     print()
@@ -52,9 +63,11 @@ def delete_user_prompt():
     else:
         return None
 
+
 def quit():
     print("\nBye.")
     exit(0)
+
 
 def validation_warning():
     print("\nPlease enter a number 1-5")
@@ -70,14 +83,14 @@ def main():
             continue
 
         if selection == 1:
-            list_users() 
+            list_users()
         elif selection == 2:
             username, password, full_name = add_user_prompt()
             if username is None:
                 continue
             add_user_query(username, password, full_name)
         elif selection == 3:
-            username, password, full_name = edit_user_prompt()    
+            username, password, full_name = edit_user_prompt()
             if username is None:
                 continue
             edit_user_query(username, password, full_name)
@@ -85,9 +98,9 @@ def main():
             username = delete_user_prompt()
             if username is None:
                 continue
-            delete_user_query(username) 
+            delete_user_query(username)
         elif selection == 5:
-            quit() 
+            quit()
         else:
             validation_warning()
 
