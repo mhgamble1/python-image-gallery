@@ -135,15 +135,6 @@ def delete_image_route(filename):
     flash('Image successfully deleted')    
     return redirect(url_for('images'))
 
-# sessions
-@app.route("/debugSession")
-@requires_user
-def debugSession():
-    result = ""
-    for key,value in session.items():
-        result += key+"->"+str(value)+"<br />"
-    return result
-
 @app.errorhandler(Exception)
 def handle_exception(e):
     print(f"An error ocurred: {e}")
