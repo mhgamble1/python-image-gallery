@@ -1,11 +1,8 @@
 #!/bin/bash
 
-HOST="host.docker.internal"
-DBNAME="image_gallery"
-USER="image_gallery"
-PASSWORD_FILE="ig_password"
+PASSWORD_FILE=$IG_PASSWD_FILE
 DUMP_FILE="config_db.sql"
 read -r PASSWORD < $PASSWORD_FILE
 export PGPASSWORD=$PASSWORD
-psql -h $HOST -U $USER -d $DBNAME -f $DUMP_FILE
+psql -h $PG_HOST -U $IG_USER -d $IG_DATABASE -f $DUMP_FILE
 unset PGPASSWORD
