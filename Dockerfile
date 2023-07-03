@@ -2,6 +2,7 @@ FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Fix timezone for tzdata installation so it doesn't prompt for input
 RUN echo "America/Chicago" > /etc/timezone && \
     apt-get update -y && apt-get install -y tzdata apt-utils && \
     ln -fs /usr/share/zoneinfo/America/Chicago /etc/localtime && \
