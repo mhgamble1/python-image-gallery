@@ -7,12 +7,14 @@
     <title>Images</title>
   </head>
   <body>
-    <h1>Images<h1>
-	{% for signed_url, delete_url in images %}
-    		<div class="image">
-        		<img src="{{ signed_url }}" width="500"/>
-        		<a href="{{ delete_url }}">Delete</a>
-    		</div>
-	{% endfor %}
-  </body>
+    <h1>Images | <a href="/">Main Menu</a><h1>
+    {% for signed_url, filename, delete_url in images %}
+        <div class="image">
+            <a href="{{ url_for('image', filename=filename) }}">
+                <img src="{{ signed_url }}" width="500"/>
+            </a>
+            <a href="{{ delete_url }}">Delete</a>
+        </div>
+    {% endfor %}
+</body>
 </html>

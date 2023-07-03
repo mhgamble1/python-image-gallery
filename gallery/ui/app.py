@@ -125,7 +125,14 @@ def images():
     signed_urls = [generate_presigned_url(image) for image in user_images]
     filenames = [image.split('/')[-1].split('?')[0] for image in user_images]
     delete_urls = [url_for('delete_image_route', filename=filename) for filename in filenames]
-    return render_template('images.html', images=zip(signed_urls, delete_urls))
+    return render_template('images.html', images=zip(signed_urls, filenames, delete_urls))
+
+@app.route("/image/<filename>", methods=['GET'])
+@requires_user
+def image(filename):
+    user = get_user_dao().get_user_by_username(session['username'])
+    image_url = generate_presigned_url(f"{user.username}/{filename}")
+    return render_template('image.html', image_url=image_url)
 
 @app.route("/deleteImage/<filename>", methods=['GET', 'POST'])
 @requires_user
