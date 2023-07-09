@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_USER: image_gallery
       POSTGRES_DB: image_gallery
-      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_PASSWORD_FILE: /run/secrets/ig_password
     secrets:
       - ig_password
     deploy:
@@ -25,6 +25,7 @@ services:
       PG_PORT: 5432
       IG_DATABASE: image_gallery
       IG_USER: image_gallery
+      IG_PASSWD_FILE: /run/secrets/ig_password
       FLASK_APP: app.py
       FLASK_ENV: development
     secrets:
