@@ -10,7 +10,7 @@ S3_BUCKET = os.getenv("S3_IMAGE_BUCKET")
 
 def connect():
     global connection
-    ig_password_file_path = os.getenv("IG_PASSWD_FILE")
+    ig_password_file_path = os.getenv("IG_PASSWORD_FILE")
     with open(ig_password_file_path, "r") as ig_password_file:
         ig_password = ig_password_file.read().strip()
     connection = psycopg2.connect(
