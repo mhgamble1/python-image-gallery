@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  database:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - /mnt/efs/postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: image_gallery
+      POSTGRES_DB: image_gallery
+      POSTGRES_PASSWORD: mysecretpassword
+    secrets:
+      - ig_password
+    deploy:
+      placement:
+        constraints: [node.labels.database == yes]
+
+  image_gallery:
+    image: flask-prod
+    ports:
+      - 8888:5555
+    environment:
+      PG_HOST: ig_stack_database
+      PG_PORT: 5432
+      IG_DATABASE: image_gallery
+      IG_USER: image_gallery
+      FLASK_APP: app.py
+      FLASK_ENV: development
+    secrets:
+      - ig_password
+      - flask_session_key
+
+secrets:
+  ig_password:
+    external: true
+  flask_session_key:
+    external: true
