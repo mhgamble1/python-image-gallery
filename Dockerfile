@@ -15,9 +15,7 @@ ENV PG_HOST=host.docker.internal \
     PG_PORT=5432 \
     IG_DATABASE=image_gallery \
     IG_USER=image_gallery \
-    IG_PASSWD_FILE=/ig_password \
     S3_IMAGE_BUCKET=edu.au.cc.image-gallery \
-    FLASK_SESSION_SECRET_FILE=/flask_session_secret \
     AWS_ACCESS_KEY_ID_FILE=/aws_access_key_id \
     AWS_SECRET_ACCESS_KEY_FILE=/aws_secret_access_key
 

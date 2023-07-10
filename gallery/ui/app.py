@@ -19,10 +19,7 @@ from ..tools.postgres_user_dao import PostgresUserDAO
 from ..tools.db import connect
 
 app = Flask(__name__)
-session_secret_file_path = os.getenv("FLASK_SESSION_SECRET_FILE")
-with open(session_secret_file_path, "r") as session_secret_file:
-    secret_key = session_secret_file.read().strip()
-app.secret_key = secret_key
+app.secret_key = os.getenv("FLASK_SESSION_SECRET")
 
 connect()
 

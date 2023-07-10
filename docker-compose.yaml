@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_USER: image_gallery
       POSTGRES_DB: image_gallery
-      POSTGRES_PASSWORD_FILE: /run/secrets/ig_password
+      POSTGRES_PASSWORD: /run/secrets/ig_password
     secrets:
       - ig_password
     deploy:
@@ -21,16 +21,25 @@ services:
     ports:
       - 8888:5555
     environment:
-      PG_HOST: ig_stack_database
+      PG_HOST: database
       PG_PORT: 5432
       IG_DATABASE: image_gallery
       IG_USER: image_gallery
-      IG_PASSWD_FILE: /run/secrets/ig_password
+      IG_PASSWD: /run/secrets/ig_password
       FLASK_APP: app.py
       FLASK_ENV: development
+      FLASK_SESSION_SECRET: /run/secrets/flask_session_key
+      AWS_ACCESS_KEY_ID_FILE: /aws_access_key_id
+      AWS_SECRET_ACCESS_KEY_FILE: /aws_secret_access_key
     secrets:
       - ig_password
       - flask_session_key
+    depends_on:
+      - database
+
+networks:
+  default:
+    driver: overlay
 
 secrets:
   ig_password:
