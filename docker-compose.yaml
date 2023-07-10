@@ -17,9 +17,12 @@ services:
         constraints: [node.labels.database == yes]
 
   image_gallery:
-    image: flask-prod
+    image: mhgamble/image-gallery:latest
     ports:
       - 8888:5555
+    deploy:
+      mode: replicated
+      replicas: 4
     environment:
       PG_HOST: database
       PG_PORT: 5432
