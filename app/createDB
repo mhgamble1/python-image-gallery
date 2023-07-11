@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PGPASSWORD=$IG_PASSWD
+psql -h $PG_HOST -U $IG_USER -d $IG_DATABASE -f $DUMP_FILE
+unset PGPASSWORD
