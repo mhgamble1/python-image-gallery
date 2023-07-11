@@ -2,10 +2,11 @@ version: '3.8'
 services:
   database:
     image: postgres
-    ports:
-      - "5432:5432"
     volumes:
       - /mnt/efs/postgres-data:/var/lib/postgresql/data
+      # I used this instead of running the app/createDB script from the image gallery container
+      # I couldn't get that way to work for some reason
+      - ./createDB.sql:/docker-entrypoint-initdb.d/createDB.sql
     environment:
       POSTGRES_USER: image_gallery
       POSTGRES_DB: image_gallery
@@ -39,7 +40,7 @@ services:
       - flask_session_key
     depends_on:
       - database
-
+    
 networks:
   default:
     driver: overlay
