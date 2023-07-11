@@ -10,22 +10,31 @@ S3_BUCKET = os.getenv("S3_IMAGE_BUCKET")
 
 def connect():
     global connection
-    connection = psycopg2.connect(
-        host=os.getenv("PG_HOST"),
-        dbname=os.getenv("IG_DATABASE"),
-        user=os.getenv("IG_USER"),
-        password=os.getenv("IG_PASSWD")
-    )
+    print("Connecting to the database...")
+    try:
+        connection = psycopg2.connect(
+            host=os.getenv("PG_HOST"),
+            dbname=os.getenv("IG_DATABASE"),
+            user=os.getenv("IG_USER"),
+            password=os.getenv("IG_PASSWD"),
+        )
+        print("Connection successful.")
+    except psycopg2.Error as e:
+        print(f"Unable to connect to the database: {e}")
 
 
 def execute(query, args=None):
     global connection
     cursor = connection.cursor()
+    print(f"Executing query: {query}")
+    if args:
+        print(f"  with arguments: {args}")
     try:
         if not args:
             cursor.execute(query)
         else:
             cursor.execute(query, args)
+        print("Query executed successfully.")
         return cursor
     except Exception as e:
         print(f"An error occurred: {e}")

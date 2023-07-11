@@ -1,5 +1,5 @@
 import os
-import json
+import logging
 import traceback
 from functools import wraps
 from flask import Flask, request, render_template, redirect, url_for, session, flash
@@ -19,6 +19,7 @@ from ..tools.postgres_user_dao import PostgresUserDAO
 from ..tools.db import connect
 
 app = Flask(__name__)
+logging.basicConfig(filename="application.log", level=logging.INFO)
 app.secret_key = os.getenv("FLASK_SESSION_SECRET")
 
 connect()
@@ -55,6 +56,21 @@ def requires_user(view):
 
     return decorated
 
+
+@app.before_request
+def log_before_request():
+    app.logger.info("Request URL: %s", request.url)
+
+
+@app.after_request
+def log_after_request(response):
+    app.logger.info("Response status: %s", response.status)
+    return response
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    app.logger.error('An error occurred: %s', str(e))
+    return str(e), 500
 
 # admin
 @app.route("/admin", methods=["GET", "POST"])
